@@ -1,4 +1,4 @@
-// const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 const yearDiv = document.getElementById('year');
 const yearNext = document.getElementById('yearNext');
 const yearPrevious = document.getElementById('yearPrevious');
@@ -18,21 +18,55 @@ yearDiv.innerHTML = year;
 dayNow.innerHTML = date.getDate();
 yearNext.addEventListener('click', getNextYear);
 yearPrevious.addEventListener('click', getPreviousYear);
-btnAdd.addEventListener('click', addEvent);
+btnAdd.addEventListener('click', createEvent);
 const namesOfDay = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const numDates = document.getElementsByClassName('num-dates');
 nameDay.innerHTML = namesOfDay[date.getDay()];
-document.querySelector('#closeDialog').onclick = function() {
+document.querySelector('#closeDialog').onclick = function () {
     dialog.close(); // Прячем диалоговое окно
 }
 
 gridCalendar(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year));
 
 window.onload = () => localStorage.clear();
-function addEvent() {
+
+function createEvent() {
     const name = eventName.value;
     const time = timeEvent.value;
-    if (localStorage.getItem(name) === time){
+
+    const tempYear = 2019;
+    const tempMonth = 11;
+    const tempDay = 13;
+    const tempHour = 11;
+    const tempMinute = 39;
+    const key = `${tempDay}/${tempMonth}/${tempYear}`;
+    const data = { [key]: value };
+    const dataToSend = JSON.stringify(data);
+
+
+    let dataRecieved = "";
+    fetch("https://jsonstorage.net/api/items/e964d3ce-cd78-4903-a325-5ff4b737d3a3", {
+        method: "post",
+        body: dataToSend
+    })
+        .then(resp => {
+            if (resp.status == 200) {
+                return resp.json()
+            } else {
+                console.log("Status: " + resp.status);
+                return Promise.reject("server")
+            }
+        })
+        .then(dataJson => {
+            dataToRecieved = JSON.parse(dataJson);
+        })
+        .catch(err => {
+            if (err == "server") return
+            console.log(err);
+        })
+
+
+    if (localStorage.getItem(name) === time) {
         dialog.show();
     }
     if (name && time) {
@@ -45,13 +79,13 @@ function addEvent() {
         li.innerHTML += `${key} : ${value}<br/>`;
         eventList.appendChild(li);
     }
+
 }
 
 function gridCalendar(table, calendar) {
     for (let i = 0; i < calendar.length; i++) {
         let td = document.createElement('td')
-        for (let j = 0; j < calendar[i].length; j++)
-        {
+        for (let j = 0; j < calendar[i].length; j++) {
             let tr = document.createElement('tr');
             tr.innerHTML = calendar[i][j];
             td.appendChild(tr)
@@ -67,7 +101,7 @@ function getPreviousYear() {
     gridCalendar(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
 }
 
-function getNextYear () {
+function getNextYear() {
     year += 1;
     yearDiv.innerHTML = year;
     gridCalendar(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
@@ -103,24 +137,20 @@ function getNextMonth(month, year) {
     return month < 12 ? [month + 1, year] : [1, year + 1];
 }
 
- function calendarAddition(calendar, month, year) {
+function calendarAddition(calendar, month, year) {
     const firstDayIndex = calendar.findIndex(element => element[0] === 1);
     const prevMonth = getPreviousMonth(month, year);
-     let numberOfDaysInPreviousMonth = numberOfDays(prevMonth[0], prevMonth[1]);
-     for (let i = firstDayIndex - 1; i >= 0; i--) {
+    let numberOfDaysInPreviousMonth = numberOfDays(prevMonth[0], prevMonth[1]);
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
         calendar[i].unshift(numberOfDaysInPreviousMonth);
         numberOfDaysInPreviousMonth--;
-        }
-     const countOfDays = numberOfDays(month,year);
-     const lastDayIndex = calendar.findIndex(element => element[element.length - 1] === countOfDays)
-     let nextDay = 1;
-     for (let i = lastDayIndex + 1; i <= 6; i++) {
-         calendar[i].push(nextDay);
-         nextDay++;
-     }
-     return calendar;
+    }
+    const countOfDays = numberOfDays(month, year);
+    const lastDayIndex = calendar.findIndex(element => element[element.length - 1] === countOfDays)
+    let nextDay = 1;
+    for (let i = lastDayIndex + 1; i <= 6; i++) {
+        calendar[i].push(nextDay);
+        nextDay++;
+    }
+    return calendar;
 }
-
-
-
-
