@@ -3,6 +3,11 @@ body {
   background-color: lightgray;
   font-family: 'Kanit', sans-serif;
 }
+
+table td:active {
+  background-color: rebeccapurple;
+}
+
 dialog {
 background: rgba(255, 255, 255, 0.7);
 width: 300px;
@@ -54,26 +59,72 @@ border-radius: 5px;
   left: 20px;
   top: 36px;
 }
-.triangle-left:hover{
-  border-right: 10px solid#2ECC71;
-}
-.triangle-right:hover{
-  border-left: 10px solid#2ECC71;
+
+.triangle-left-month {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-right: 22px solid #E8E8E8;
+  border-bottom: 10px solid transparent;
+  float: right;
+  position: relative;
+  right: 314px;
+  top: 49px;
 }
 
+.triangle-right-month {
+  width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-left: 22px solid #E8E8E8;
+    border-bottom: 10px solid transparent;
+    float: right;
+    position: relative;
+    left: -111px;
+    top: 49px;
+}
+
+.triangle-left-month:hover {
+  border-right: 22px solid#2ECC71;
+  transition: all 0.4s;
+  cursor: pointer;
+}
+
+.triangle-right-month:hover {
+  border-left: 22px solid#2ECC71;
+  transition: all 0.4s;
+  cursor: pointer;
+}
+
+.triangle-left:hover {
+  border-right: 10px solid#2ECC71;
+  transition: all 0.4s;
+  cursor: pointer;
+}
+
+.triangle-right:hover {
+  border-left: 10px solid#2ECC71;
+  transition: all 0.4s;
+  cursor: pointer;
+}
+
+
 .month-color {
-color: #27AE60;
+  color: #27AE60;
 }
 .month-hover:hover {
-color:#27e879;
+  color:#27e879;
 }
 
 .months {
-color: #AAAAAA;
-position: relative;
-left: 350px;
-top: 70px;
-word-spacing: 10px;
+  
+    text-align: center;
+    color: #AAAAAA;
+    position: relative;
+    left: 350px;
+    top: 70px;
+    width: 499px;
+    
 }
 
 .month-line {
@@ -85,12 +136,16 @@ left: 178px;
 }
 
 table td {
- padding: 28px;
- padding-top: 14px;
+  width: 72px;
+  height: 56px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 table td:hover {
  background-color: #26A69A;
+ transition: all 0.4s;
+ cursor: pointer;
 }
 .num-dates {
 float: right;
@@ -170,6 +225,7 @@ width: 50%;
 position: relative;
 margin: 0 auto;
 font-weight: 700;
+text-align: center;
 }
 
 .day {
@@ -177,6 +233,7 @@ width: 50%;
 margin: 0px auto;
 font-size: 30px;
 bottom: 60px;
+text-align: center;
 }
 
 .current-events {

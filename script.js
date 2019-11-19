@@ -1,4 +1,8 @@
-
+const nameMonth = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+const namesOfDay = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+const currentMonth = document.getElementsByClassName('current-month');
+const nextMonth = document.getElementById('monthNext');
+const previousMonth = document.getElementById('monthPrevious')
 const yearDiv = document.getElementById('year');
 const yearNext = document.getElementById('yearNext');
 const yearPrevious = document.getElementById('yearPrevious');
@@ -11,24 +15,32 @@ const eventList = document.getElementById('eventList');
 const eventName = document.getElementById('eventName');
 const timeEvent = document.getElementById('eventTime');
 const btnAdd = document.getElementById('btnAdd');
-const date = new Date();
-let year = new Date().getFullYear();
-let month = new Date().getMonth();
+const numDates = document.getElementsByClassName('num-dates');
+let storageUrlKey = 'storageKey';
+let date = new Date();
+let day = date.getDate();
+let year = date.getFullYear();
+let month = date.getMonth();
+let storage = [];
+monthDiv.innerHTML = nameMonth[month];
 yearDiv.innerHTML = year;
-dayNow.innerHTML = date.getDate();
+dayNow.innerHTML = day;
 yearNext.addEventListener('click', getNextYear);
 yearPrevious.addEventListener('click', getPreviousYear);
 btnAdd.addEventListener('click', createEvent);
-const namesOfDay = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-const numDates = document.getElementsByClassName('num-dates');
 nameDay.innerHTML = namesOfDay[date.getDay()];
-document.querySelector('#closeDialog').onclick = function () {
-    dialog.close(); // Прячем диалоговое окно
-};
-
+nextMonth.addEventListener('click', nextMonth);
+previousMonth.addEventListener('click', previousMonth)
 showDayOfMonth(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year));
+initializeStorage();
 
-window.onload = () => localStorage.clear();
+function initializeStorage() {
+    fetch(localStorage.getItem(storageUrlKey))
+        .then(result => result.json())
+        .then(result => {
+            storage = result;
+        });
+}
 
 function clear() {
     while (table.firstChild)
@@ -42,53 +54,22 @@ function transpose(array) {
 function createEvent() {
     const name = eventName.value;
     const time = timeEvent.value;
-
-    const tempYear = 2019;
-    const tempMonth = 11;
-    const tempDay = 13;
-    const tempHour = 11;
-    const tempMinute = 39;
-    const key = `${tempDay}/${tempMonth}/${tempYear}`;
-    const data = { [key]: value };
-    const dataToSend = JSON.stringify(data);
-
-
-    let dataRecieved = "";
-    fetch("https://jsonstorage.net/api/items/e964d3ce-cd78-4903-a325-5ff4b737d3a3", {
+    const key = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const data = { [key]: `${name}: ${time}` };
+    storage.push(data);
+    const dataToSend = JSON.stringify(storage);
+    fetch("https://jsonstorage.net/api/items", {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
         method: "post",
-        body: dataToSend
+        body: dataToSend,
     })
-        .then(resp => {
-            if (resp.status == 200) {
-                return resp.json()
-            } else {
-                console.log("Status: " + resp.status);
-                return Promise.reject("server")
-            }
-        })
-        .then(dataJson => {
-            dataToRecieved = JSON.parse(dataJson);
-        })
-        .catch(err => {
-            if (err == "server") return
-            console.log(err);
-        })
-
-
-    if (localStorage.getItem(name) === time) {
-        dialog.show();
-    }
-    if (name && time) {
-        localStorage.setItem(name, time);
-    }
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const value = localStorage.getItem(key);
-        let li = document.createElement('li');
-        li.innerHTML += `${key} : ${value}<br/>`;
-        eventList.appendChild(li);
-    }
-
+        .then(result => result.json())
+        .then(result => {
+            localStorage.setItem(storageUrlKey, result.uri);
+        });
 }
 
 function showDayOfMonth(table, calendar) {
@@ -99,9 +80,15 @@ function showDayOfMonth(table, calendar) {
         for (let j = 0; j < newCalendar[i].length; j++) {
             let td = document.createElement('td');
             td.innerHTML = newCalendar[i][j];
-            tr.appendChild(td)
+            td.onclick = () => {
+                date = new Date(year, month, newCalendar[i][j]);
+                nameDay.innerHTML = namesOfDay[date.getDay() - 1];
+                dayNow.innerHTML = date.getDate();
+                // console.log(storage);
+            };
+            tr.appendChild(td);
         }
-        table.appendChild(tr)
+        table.appendChild(tr);
     }
 }
 
