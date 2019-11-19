@@ -1,85 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
 
-    <title>Event manager</title>
+  <title>Event manager</title>
 </head>
+
 <body>
-<div></div>
-        <div class="container">
+  <div></div>
+  <div class="container">
 
-                <div class="calendar-base">
+    <div class="calendar-base">
 
-                  <div class="year" id="year"></div>
+      <div class="year" id="year"></div>
 
-                    <span  class="triangle-left" id="yearPrevious"></span>
-                    <span  class="triangle-right" id="yearNext"></span>
+      <span class="triangle-left" id="yearPrevious"></span>
+      <span class="triangle-right" id="yearNext"></span>
 
-                  <div class="months" id="month">
-                    <span class="month-hover">Jan</span>
-                    <span class="month-hover">Feb</span>
-                    <span class="month-hover">Mar</span>
-                    <span class="month-hover">Apr</span>
-                    <span class="month-hover">May</span>
-                    <span class="month-hover">Jun</span>
-                    <span class="month-hover">July</span>
-                    <span class="month-hover">Aug</span>
-                    <span class="month-hover">Sep</span>
-                    <span class="month-hover">Oct</span>
-                    <span class="month-hover">Nov</span>
-                    <span class="month-hover">Dec</span>
-                  </div>
-                  <hr class="month-line" />
+      <div class="months" id="month">
+        <span class="month-hover">Jan</span>
+        <span class="month-hover">Feb</span>
+        <span class="month-hover">Mar</span>
+        <span class="month-hover">Apr</span>
+        <span class="month-hover">May</span>
+        <span class="month-hover">Jun</span>
+        <span class="month-hover">July</span>
+        <span class="month-hover">Aug</span>
+        <span class="month-hover">Sep</span>
+        <span class="month-hover">Oct</span>
+        <span class="month-hover">Nov</span>
+        <span class="month-hover">Dec</span>
+      </div>
+      <hr class="month-line" />
 
-                  <div class="days">SUN MON TUE WED THU FRI SAT</div>
-                  <!-- days -->
+      <div class="days">MON TUE WED THU FRI SAT SUN</div>
+      <!-- days -->
 
-                  <div class="num-dates">
-                    <table id="num-dates"></table>
+      <div class="num-dates">
+        <table id="num-dates"></table>
 
-                    <!-- week -->
-                  </div>
-                  <!-- num-dates -->
-
-
-                </div>
-          <!-- calendar-base -->
-          <div class="calendar-left">
+        <!-- week -->
+      </div>
+      <!-- num-dates -->
 
 
-            <div class="num-date" id="dateDayNow"></div>
-            <!--num-date -->
-            <div class="day" id="nameDay"></div>
-            <!--day -->
-            <div class="current-events">Current Events
-              <br/>
-              <ul id="eventList">
+    </div>
+    <!-- calendar-base -->
+    <div class="calendar-left">
 
-              </ul>
-              <span class="posts">See post events</span></div>
-            <!--current-events -->
 
-            <input class="create-event" id="eventName" placeholder="Create an Event">
-            <input type="time" class="create-event" id="eventTime">
-            <!-- create-event -->
-            <hr class="event-line" />
-            <div class="add-event"><span class="add" id="btnAdd">+</span></div>
-            <!-- add-event -->
+      <div class="num-date" id="dateDayNow"></div>
+      <!--num-date -->
+      <div class="day" id="nameDay"></div>
+      <!--day -->
+      <div class="current-events">Current Events
+        <br />
+        <ul id="eventList">
 
-          </div>
-          <!-- calendar-left -->
+        </ul>
+        <span class="posts">See post events</span>
+      </div>
+      <!--current-events -->
 
-        </div>
-        <!-- container -->
-<dialog>
-  <p>An event is scheduled for this time.</p>
-  <p><button id="closeDialog">Закрыть окно</button></p>
-</dialog>
-</div>
+      <input class="create-event" id="eventName" placeholder="Create an Event">
+      <input type="time" class="create-event" id="eventTime">
+      <!-- create-event -->
+      <hr class="event-line" />
+      <div class="add-event"><span class="add" id="btnAdd">+</span></div>
+      <!-- add-event -->
+
+    </div>
+    <!-- calendar-left -->
+
+  </div>
+  <!-- container -->
+  <dialog>
+    <p>An event is scheduled for this time.</p>
+    <p><button id="closeDialog">Закрыть окно</button></p>
+  </dialog>
+  </div>
 </body>
+
 </html>

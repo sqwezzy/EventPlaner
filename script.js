@@ -24,11 +24,20 @@ const numDates = document.getElementsByClassName('num-dates');
 nameDay.innerHTML = namesOfDay[date.getDay()];
 document.querySelector('#closeDialog').onclick = function () {
     dialog.close(); // Прячем диалоговое окно
-}
+};
 
-gridCalendar(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year));
+showDayOfMonth(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year));
 
 window.onload = () => localStorage.clear();
+
+function clear() {
+    while (table.firstChild)
+        table.removeChild(table.firstChild)
+}
+
+function transpose(array) {
+    return array[0].map((col, i) => array.map(row => row[i]));
+}
 
 function createEvent() {
     const name = eventName.value;
@@ -82,15 +91,17 @@ function createEvent() {
 
 }
 
-function gridCalendar(table, calendar) {
-    for (let i = 0; i < calendar.length; i++) {
-        let td = document.createElement('td')
-        for (let j = 0; j < calendar[i].length; j++) {
-            let tr = document.createElement('tr');
-            tr.innerHTML = calendar[i][j];
-            td.appendChild(tr)
+function showDayOfMonth(table, calendar) {
+    clear();
+    let newCalendar = transpose(calendar);
+    for (let i = 0; i < newCalendar.length; i++) {
+        let tr = document.createElement('tr');
+        for (let j = 0; j < newCalendar[i].length; j++) {
+            let td = document.createElement('td');
+            td.innerHTML = newCalendar[i][j];
+            tr.appendChild(td)
         }
-        table.appendChild(td)
+        table.appendChild(tr)
     }
 }
 
@@ -98,13 +109,13 @@ function gridCalendar(table, calendar) {
 function getPreviousYear() {
     year -= 1;
     yearDiv.innerHTML = year;
-    gridCalendar(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
+    showDayOfMonth(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
 }
 
 function getNextYear() {
     year += 1;
     yearDiv.innerHTML = year;
-    gridCalendar(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
+    showDayOfMonth(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
 }
 
 function firstDateOfDay(numberOfDay, month, year) {
