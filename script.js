@@ -1,5 +1,5 @@
 const nameMonth = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-const namesOfDay = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
+const namesOfDay = ['SUNDAY','MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 const currentMonth = document.getElementsByClassName('current-month');
 const nextMonth = document.getElementById('monthNext');
 const previousMonth = document.getElementById('monthPrevious')
@@ -19,11 +19,11 @@ const numDates = document.getElementsByClassName('num-dates');
 let storageUrlKey = 'storageKey';
 let date = new Date();
 let day = date.getDate();
-let year = date.getFullYear();
-let month = date.getMonth();
+let globalYear = date.getFullYear();
+let globalMonth = date.getMonth();
 let storage = [];
-monthDiv.innerHTML = nameMonth[month];
-yearDiv.innerHTML = year;
+monthDiv.innerHTML = nameMonth[globalMonth];
+yearDiv.innerHTML = globalYear;
 dayNow.innerHTML = day;
 yearNext.addEventListener('click', getNextYear);
 yearPrevious.addEventListener('click', getPreviousYear);
@@ -31,7 +31,7 @@ btnAdd.addEventListener('click', createEvent);
 nameDay.innerHTML = namesOfDay[date.getDay()];
 nextMonth.addEventListener('click', nextMonth);
 previousMonth.addEventListener('click', previousMonth)
-showDayOfMonth(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year));
+showDayOfMonth(table, calendarAddition(getMonthCalendar(globalMonth + 1, globalYear), globalMonth + 1, globalYear));
 initializeStorage();
 
 function initializeStorage() {
@@ -72,17 +72,59 @@ function createEvent() {
         });
 }
 
+function getMonthBorders(calendar) {
+    let beforeMonthIndex;
+    let temp = 0;
+    for (let i = 0; i < calendar[0].length; i++) {
+        if (calendar[0][i] < temp) beforeMonthIndex = i - 1;
+        temp = calendar[0][i];
+    }
+
+    temp = 0;
+    let afterMonthIndex;
+    for (let i = 0; i < calendar[calendar.length - 1].length; i++) {
+        if (calendar[calendar.length - 1][i] < temp) {
+            afterMonthIndex = i;
+        }
+        temp = calendar[calendar.length - 1][i];
+    }
+
+    return { beforeMonthIndex, afterMonthIndex };
+}
+
 function showDayOfMonth(table, calendar) {
     clear();
     let newCalendar = transpose(calendar);
+    const { beforeMonthIndex, afterMonthIndex } = getMonthBorders(newCalendar);
     for (let i = 0; i < newCalendar.length; i++) {
         let tr = document.createElement('tr');
         for (let j = 0; j < newCalendar[i].length; j++) {
             let td = document.createElement('td');
+            let monthYear;
+            if (i === 0 && (beforeMonthIndex || beforeMonthIndex === 0) && j <= beforeMonthIndex) {
+                td.className = 'gray';
+                monthYear = getPreviousMonth(globalMonth + 1, globalYear);
+            }
+            if (i === newCalendar.length - 1 && (afterMonthIndex || afterMonthIndex === 0) && j >= afterMonthIndex) {
+                td.className = 'gray';
+                monthYear = getNextMonth(globalMonth + 1, globalYear);
+            }
+            let isFirstWeek = i === 0;
+            let isAfterMonth = isFirstWeek ? j > beforeMonthIndex : true;
+            let isLastWeek = i === newCalendar.length - 1;
+            let isBeforeMonth = isLastWeek ? j < afterMonthIndex : true;
+            if (newCalendar[i][j] === date.getDate() && isAfterMonth && isBeforeMonth ) {
+                td.className = 'active';
+            }
+            const today = new Date();
+            if (today.getMonth() === globalMonth && today.getDate() === newCalendar[i][j] && today.getFullYear() === globalYear) {
+                td.className = 'today'
+            }
             td.innerHTML = newCalendar[i][j];
             td.onclick = () => {
-                date = new Date(year, month, newCalendar[i][j]);
-                nameDay.innerHTML = namesOfDay[date.getDay() - 1];
+                date = monthYear ? new Date(monthYear[1], monthYear[0] - 1, newCalendar[i][j]) : new Date(globalYear, globalMonth, newCalendar[i][j]);
+                showDayOfMonth(table, calendarAddition(getMonthCalendar(date.getMonth() + 1, date.getFullYear()), date.getMonth() + 1, date.getFullYear()));
+                nameDay.innerHTML = namesOfDay[date.getDay()];
                 dayNow.innerHTML = date.getDate();
                 // console.log(storage);
             };
@@ -94,21 +136,22 @@ function showDayOfMonth(table, calendar) {
 
 
 function getPreviousYear() {
-    year -= 1;
-    yearDiv.innerHTML = year;
-    showDayOfMonth(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
+    globalYear -= 1;
+    yearDiv.innerHTML = globalYear;
+    showDayOfMonth(table, calendarAddition(getMonthCalendar(globalMonth + 1, globalYear), globalMonth + 1, globalYear))
 }
 
 function getNextYear() {
-    year += 1;
-    yearDiv.innerHTML = year;
-    showDayOfMonth(table, calendarAddition(getMonthCalendar(month + 1, year), month + 1, year))
+    globalYear += 1;
+    yearDiv.innerHTML = globalYear;
+    showDayOfMonth(table, calendarAddition(getMonthCalendar(globalMonth + 1, globalYear), globalMonth + 1, globalYear))
 }
 
 function firstDateOfDay(numberOfDay, month, year) {
     const firstDayOfMonth = new Date(`${month}/1/${year}`).getDay();
     const result = 8 - (firstDayOfMonth - numberOfDay);
-    return result > 7 ? result - 7 : result;
+    console.log(result);
+    return result % 7 === 0 ? 7 : result % 7;
 }
 
 function numberOfDays(month, year) {
@@ -121,9 +164,11 @@ function getMonthCalendar(month, year) {
     for (let i = 0; i < 7; i++) {
         calendar.push([]);
         for (let date = firstDateOfDay(i + 1, month, year); date <= countOfDays; date += 7) {
+            // console.log(date);
             calendar[i].push(date);
         }
     }
+    // console.log(calendar)
     return calendar;
 }
 
@@ -137,6 +182,7 @@ function getNextMonth(month, year) {
 
 function calendarAddition(calendar, month, year) {
     const firstDayIndex = calendar.findIndex(element => element[0] === 1);
+
     const prevMonth = getPreviousMonth(month, year);
     let numberOfDaysInPreviousMonth = numberOfDays(prevMonth[0], prevMonth[1]);
     for (let i = firstDayIndex - 1; i >= 0; i--) {
@@ -144,7 +190,9 @@ function calendarAddition(calendar, month, year) {
         numberOfDaysInPreviousMonth--;
     }
     const countOfDays = numberOfDays(month, year);
+
     const lastDayIndex = calendar.findIndex(element => element[element.length - 1] === countOfDays)
+
     let nextDay = 1;
     for (let i = lastDayIndex + 1; i <= 6; i++) {
         calendar[i].push(nextDay);

@@ -8,6 +8,10 @@ table td:active {
   background-color: rebeccapurple;
 }
 
+.today {
+  background-color: royalblue;
+}
+
 dialog {
 background: rgba(255, 255, 255, 0.7);
 width: 300px;
@@ -209,6 +213,14 @@ left: 25px;
 
 .burger-line:hover, .hamburger:hover{
 background-color:#27e879 !important;
+}
+
+.gray {
+  color: red;
+}
+
+.active {
+  background-color: seagreen;
 }
 
 .burger-line {
