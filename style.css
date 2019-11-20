@@ -4,8 +4,13 @@ body {
   font-family: 'Kanit', sans-serif;
 }
 
+.button {
+  cursor: pointer;
+}
 
-
+.event-form {
+  margin-left: 5px;
+}
 
 .today {
   background-color: #2ECC71;
@@ -208,15 +213,6 @@ bottom: 500px;
 color: white;
 }
 
-.hamburger {
-position: relative;
-top: 25px;
-left: 25px;
-}
-
-.burger-line:hover, .hamburger:hover{
-background-color:#27e879 !important;
-}
 
 .gray {
   color: red;
@@ -267,6 +263,9 @@ text-decoration: underline dotted;
 color:#27e879 !important;
 }
 
+.event-form {
+  margin-left: 5px;
+}
 .create-event {
 font-size: 18px;
 position: relative;

@@ -13,15 +13,15 @@ const dayNow = document.getElementById('dateDayNow');
 const nameDay = document.getElementById('nameDay');
 const eventList = document.getElementById('eventList');
 const eventName = document.getElementById('eventName');
-const timeEvent = document.getElementById('eventTime');
+const eventTime = document.getElementById('eventTime');
 const btnAdd = document.getElementById('btnAdd');
 const numDates = document.getElementsByClassName('num-dates');
-const currentEvent = document.getElementsByClassName('current-events');
+const currentEvent = document.getElementsByClassName('current-events')
 
 let storageUrlKey = 'storageKey';
 let date = new Date();
 let storage = [];
-
+let keyEvent = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 monthDiv.innerHTML = nameMonth[date.getMonth()];
 yearDiv.innerHTML = date.getFullYear();
 dayNow.innerHTML = date.getDate();
@@ -37,12 +37,13 @@ showDayOfMonth(getFullMonthCalendar(date.getMonth() + 1, date.getFullYear()));
 initializeStorage();
 
 function showEventList() {
-    let events = storage.filter(x => x[`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`]);
-    for (let i = 0; i < events.length; i++) {
-        let li = document.createElement('li');
-        li.innerHTML += events[i][`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`];
-        eventList.appendChild(li);
-    }
+    clear(eventList);
+    let events = storage.filter(event => event[keyEvent]).map(event => event[keyEvent]);
+    events.forEach(event => {
+        const li = document.createElement('li');
+        li.innerHTML += event;
+        eventList.appendChild(li)
+    });
 }
 
 function initializeStorage() {
@@ -50,6 +51,7 @@ function initializeStorage() {
         .then(result => result.json())
         .then(result => {
             storage = result;
+            showEventList();
         });
 }
 
@@ -64,9 +66,10 @@ function transpose(array) {
 
 function createEvent() {
     const name = eventName.value;
-    const time = timeEvent.value;
-    const key = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-    const data = { [key]: `${name}: ${time}` };
+    const time = eventTime.value;
+    const data = { [keyEvent]: `${name}: ${time}` };
+    eventName.value = "";
+    eventTime.value = "";
     storage.push(data);
     const dataToSend = JSON.stringify(storage);
     fetch("https://jsonstorage.net/api/items", {
@@ -80,6 +83,7 @@ function createEvent() {
         .then(result => result.json())
         .then(result => {
             localStorage.setItem(storageUrlKey, result.uri);
+            showEventList();
         });
 }
 
@@ -150,9 +154,8 @@ function showDayOfMonth(calendar) {
                 nameDay.innerHTML = namesOfDay[date.getDay()];
                 dayNow.innerHTML = date.getDate();
                 monthDiv.innerHTML = nameMonth[date.getMonth()];
-                clear(eventList)
+                keyEvent = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
                 showEventList()
-
             };
             tr.appendChild(td);
         }
