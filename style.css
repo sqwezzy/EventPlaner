@@ -5,11 +5,17 @@ body {
 }
 
 table td:active {
-  background-color: rebeccapurple;
+  background-color: #2ECC71;
+  border-radius: 50%;
+  transition: all 0.4s;
+  cursor: pointer;
 }
 
 .today {
-  background-color: royalblue;
+  background-color: #2ECC71;
+  border-radius: 50%;
+  transition: all 0.4s;
+  cursor: pointer;
 }
 
 dialog {
@@ -147,9 +153,10 @@ table td {
 }
 
 table td:hover {
- background-color: #26A69A;
- transition: all 0.4s;
- cursor: pointer;
+  background-color: #26A69A;
+  border-radius: 50%;
+  transition: all 0.4s;
+  cursor: pointer;
 }
 .num-dates {
 float: right;
@@ -220,7 +227,10 @@ background-color:#27e879 !important;
 }
 
 .active {
-  background-color: seagreen;
+  background-color: #26A69A;
+  border-radius: 50%;
+  transition: all 0.4s;
+  cursor: pointer;
 }
 
 .burger-line {
