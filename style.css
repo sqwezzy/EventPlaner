@@ -4,12 +4,8 @@ body {
   font-family: 'Kanit', sans-serif;
 }
 
-table td:active {
-  background-color: #2ECC71;
-  border-radius: 50%;
-  transition: all 0.4s;
-  cursor: pointer;
-}
+
+
 
 .today {
   background-color: #2ECC71;
@@ -278,6 +274,7 @@ margin-top: 30px;
 margin-left: 25px;
 border: 0;
 background-color: #2ECC71;
+color: black;
 }
 
 .event-line {

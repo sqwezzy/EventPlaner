@@ -16,6 +16,7 @@ const eventName = document.getElementById('eventName');
 const timeEvent = document.getElementById('eventTime');
 const btnAdd = document.getElementById('btnAdd');
 const numDates = document.getElementsByClassName('num-dates');
+const currentEvent = document.getElementsByClassName('current-events');
 
 let storageUrlKey = 'storageKey';
 let date = new Date();
@@ -35,8 +36,14 @@ previousMonth.addEventListener('click', showPreviousMonth)
 showDayOfMonth(getFullMonthCalendar(date.getMonth() + 1, date.getFullYear()));
 initializeStorage();
 
-
-
+function showEventList() {
+    let events = storage.filter(x => x[`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`]);
+    for (let i = 0; i < events.length; i++) {
+        let li = document.createElement('li');
+        li.innerHTML += events[i][`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`];
+        eventList.appendChild(li);
+    }
+}
 
 function initializeStorage() {
     fetch(localStorage.getItem(storageUrlKey))
@@ -46,9 +53,9 @@ function initializeStorage() {
         });
 }
 
-function clear() {
-    while (table.firstChild)
-        table.removeChild(table.firstChild)
+function clear(parent) {
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild)
 }
 
 function transpose(array) {
@@ -99,7 +106,7 @@ function getMonthBorders(calendar) {
 }
 
 function showDayOfMonth(calendar) {
-    clear();
+    clear(table);
     let newCalendar = transpose(calendar);
     const { beforeMonthIndex, afterMonthIndex } = getMonthBorders(newCalendar);
     for (let i = 0; i < newCalendar.length; i++) {
@@ -135,6 +142,7 @@ function showDayOfMonth(calendar) {
 
             td.innerHTML = currentDate;
             td.onclick = () => {
+                clear(currentEvent);
                 date = monthYear
                     ? new Date(monthYear.year, monthYear.month - 1, currentDate)
                     : new Date(date.getFullYear(), date.getMonth(), currentDate);
@@ -142,7 +150,9 @@ function showDayOfMonth(calendar) {
                 nameDay.innerHTML = namesOfDay[date.getDay()];
                 dayNow.innerHTML = date.getDate();
                 monthDiv.innerHTML = nameMonth[date.getMonth()];
-                // console.log(storage);
+                clear(eventList)
+                showEventList()
+
             };
             tr.appendChild(td);
         }
